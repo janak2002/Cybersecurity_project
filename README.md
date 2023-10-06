@@ -1,2 +1,3 @@
 # Cybersecurity_project
-All the code for password manager app 
+
+Here's all the code for cybersecurity project on password managers.
