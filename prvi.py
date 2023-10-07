@@ -1,7 +1,7 @@
 from cryptography. fernet import Fernet
 
 
-#hello this is cod
+#hello this is code
 
 class PasswordManager:
 
