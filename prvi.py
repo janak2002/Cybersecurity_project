@@ -1,6 +1,5 @@
 from cryptography. fernet import Fernet
 
-
 #hello this is cod
 #I love coding yey
 
