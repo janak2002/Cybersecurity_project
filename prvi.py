@@ -65,29 +65,32 @@ def main():
 
     while not done:
         choice = input("Enter your choice: ")
-        match choice:
-            case '1':
-                path=input('Enter path: ')
-                pm.create_key(path)
-            case '2':
-                path=input('Enter path: ')
-                pm.load_key(path)
-            case '3':
-                path=input('Enter path: ')
-                pm.create_password_file(path,password)
-            case '4':
-                path=input('Enter path: ')
-                pm.load_password_file(path)
-            case '5':
-                site=input('Enter site: ')
-                password=input('Enter password: ')
-                pm.add_password_file(site, password)
-            case '6':
-                site=input('Enter site: ')
-                print(f"Password for site {site} is {pm.get_password(site)}")
-            case 'q':
-                done=True
-                print("Bye")
+        if choice == '1':
+            path=input('Enter path: ')
+            pm.create_key(path)
+
+        elif choice == '2':
+            path=input('Enter path: ')
+            pm.load_key(path)
+        elif choice == '3':
+            path=input('Enter path: ')
+            pm.create_password_file(path,password)
+
+        elif choice == '4':
+            path=input('Enter path: ')
+            pm.load_password_file(path)
+
+        elif choice == '5':
+            site=input('Enter site: ')
+            password=input('Enter password: ')
+            pm.add_password_file(site, password)
+
+        elif choice == '6':
+            site=input('Enter site: ')
+            print(f"Password for site {site} is {pm.get_password(site)}")
+        elif choice == 'q':
+            done=True
+            print("Bye")
 if __name__ == "__main__":
     main()
 
