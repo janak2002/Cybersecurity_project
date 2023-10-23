@@ -5,13 +5,17 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import os
 
+# Encryptor & Decryptor Class
 class PasswordManager:
 
-    def __init__(self): # Set parameters
+    # Initiation Function
+    # Defining properties and functions of the class
+    def __init__(self):
         self.key = None
         self.password_file = None
         self.dict = {}
-        self.mpassword = None
+        # master password
+        self.mpassword=None
 
    
     def create_master_password(self): # Ask for Master Password first time
@@ -27,16 +31,18 @@ class PasswordManager:
     def generate_key(self,path): # Makes the key
         salt = b'\xa6\n\x14\xc8l\x124\xb2\xa6\xcd\xf1\x7f\x95 \xe9d\x7fN1H\\\xd8\r\xad\x1e\xfd\xbc\xaf\x85\xcf\xc28'
         self.mpassword='masterpassword'
+        # Create a key for AES
         self.key=PBKDF2(self.mpassword,salt,32)
         return self.key
 
     def encrypt_clear_text(self, clear_text,path): # Encryption and padding
 
         cipher = AES.new(self.key,AES.MODE_CBC)
+        #padding, adding bytes in order to enhance encryption
         ciphered_data=cipher.encrypt(pad(clear_text,AES.block_size))
 
         with open (path,'ab') as f:
-            f.write(cipher.iv) # Initialisation Vector (iv)
+            f.write(cipher.iv) #Initialization Vector
             f.write(ciphered_data)
 
         print("Cipher IV:", cipher.iv)
