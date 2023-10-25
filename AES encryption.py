@@ -9,7 +9,7 @@ salt = b'\xa6\n\x14\xc8l\x124\xb2\xa6\xcd\xf1\x7f\x95 \xe9d\x7fN1H\\\xd8\r\xad\x
 password='mydoglili'
 
 key=PBKDF2(password,salt,32)
-message = b"I'm having so much fun"
+message = b"j.klaric@student.utwente.nl"
 print(key)
 cipher = AES.new(key,AES.MODE_CBC)
 ciphered_data=cipher.encrypt(pad(message,AES.block_size))

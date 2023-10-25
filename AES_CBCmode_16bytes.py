@@ -33,17 +33,33 @@ class PasswordManager:
     def encrypt_clear_text(self, clear_text,path):
 
         cipher = AES.new(self.key,AES.MODE_CBC)
-        ciphered_data=cipher.encrypt(pad(clear_text,AES.block_size))
+        if len(clear_text) % AES.block_size == 0:
+            print('size of clear text is: ',len(clear_text))
+            print("I don't get padded because I'm a size of the AES block!")
+            padded_data = clear_text
+            
+        else:
+            padded_data = pad(clear_text, AES.block_size)
+            print('size of clear text is: ',len(clear_text))
+            print('I get padded!')
+
+        ciphered_data = cipher.encrypt(padded_data)
+        #print('size of long data is: ',len(ciphered_data))
+        #ciphered_data=cipher.encrypt(pad(clear_text,AES.block_size))
 
         with open (path,'ab') as f:
             f.write(cipher.iv)
             f.write(ciphered_data)
 
-        print("Cipher IV:", cipher.iv)
-        print("Ciphered Data:", ciphered_data)
+        
+        #print("Ciphered Data:", ciphered_data)
+        line_in_encryption_file=len(cipher.iv)+len(ciphered_data)
+        print("A line in encryption file is: ", len(cipher.iv)+len(ciphered_data))
+        return line_in_encryption_file
 
+    
 
-    def decrypt_cipher_text(self,path,list_of_logins,file_length): 
+    def decrypt_cipher_text(self,path,list_of_logins,file_length,line_lengths): 
         line_size = 32
         line_number = 0
         self.password_file=path
@@ -66,8 +82,17 @@ class PasswordManager:
                     print('encrypted data is: ',encrypted_data)
                     cipher=AES.new(self.key,AES.MODE_CBC,iv=iv)
                     print('size of block: ',AES.block_size)
-                    decrypted_data=unpad(cipher.decrypt(encrypted_data),AES.block_size)
-                    
+                    #decrypted_data=unpad(cipher.decrypt(encrypted_data),AES.block_size)
+                    decrypted_data=cipher.decrypt(encrypted_data),AES.block_size
+                    print('size of decrypted data', len(decrypted_data))
+
+                    if len(decrypted_data) // AES.block_size < 1:
+                        print('breeeeeeee')
+                        decrypted_data = unpad(decrypted_data, AES.block_size)
+                    else:
+                        print('breeee 2')
+                        
+                    #ecoded_data = [item.decode('utf-8') for item in decrypted_data]
                     cred_list.append(decrypted_data)
                     increment+=1                   
                 increment-=1
@@ -87,16 +112,18 @@ def main():
     clear_file('encrypted_text.bin')
     pw=PasswordManager()
     #pw.create_master_password()
-    key=pw.generate_key('myfunkey.keym')
+    key=pw.generate_key('myfunkey.key')
     print(key)
     passi=pw.get_master_password()
     print(passi)
     list_of_logins=[]  #contains site,username,password for all your logins
     list_of_credentials=[]
+    line_lengths=[]
+    
     
     dictionary={b'yt':[b'jana_1',b'ivana123'],
                 b'instagram':[b'jana_k',b'bassamcool'],
-                b'utwente':[b'j.klaric@studen',b'janaaaaa23']               
+                b'utwente':[b'j.klaric@student.utwente',b'janaaaaa23']               
                 }
    
     for site,credentials in dictionary.items():
@@ -105,12 +132,13 @@ def main():
         list_of_credentials.extend(credentials)
 
     for i in range (len(list_of_credentials)):
-        pw.encrypt_clear_text(list_of_credentials[i],'encrypted_text.bin')
         print('encrypting: ',list_of_credentials[i])
+        line_lengths.append(pw.encrypt_clear_text(list_of_credentials[i],'encrypted_text.bin'))
+        
    
-
+    print(line_lengths)
     print(list_of_logins)
-    dict_2=pw.decrypt_cipher_text('encrypted_text.bin',list_of_logins,len(dictionary))
+    dict_2=pw.decrypt_cipher_text('encrypted_text.bin',list_of_logins,len(dictionary),line_lengths)
     print(dict_2)
     file_path = 'encrypted_text.bin'  # Replace with the actual path to your .bin file
 
