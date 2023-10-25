@@ -5,32 +5,37 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import os
 
+# Encryptor & Decryptor Class
 class PasswordManager:
 
+    # Initiation Function
+    # Defining properties and functions of the class
     def __init__(self):
         self.key = None
         self.password_file = None
         self.dict = {}
+        # master password
         self.mpassword=None
 
    
-    def create_master_password(self):
-        self.mpassword=input('what would you like to be your master password')
+    def create_master_password(self): # Ask for Master Password first time
+        self.mpassword = input('what would you like to be your master password')
         with open ('master_password.bin','w') as f:
             f.write(self.mpassword)
 
-    def get_master_password(self):
+    def get_master_password(self): # Ask for Master Password every other time
         with open ('master_passwordi.bin','r') as f:
             self.mpassword=f.read()
         return self.mpassword
 
-    def generate_key(self,path):
+    def generate_key(self,path): # Makes the key
         salt = b'\xa6\n\x14\xc8l\x124\xb2\xa6\xcd\xf1\x7f\x95 \xe9d\x7fN1H\\\xd8\r\xad\x1e\xfd\xbc\xaf\x85\xcf\xc28'
         self.mpassword='masterpassword'
+        # Create a key for AES
         self.key=PBKDF2(self.mpassword,salt,32)
         return self.key
 
-    def encrypt_clear_text(self, clear_text,path):
+    def encrypt_clear_text(self, clear_text,path): # Encryption and padding
 
         cipher = AES.new(self.key,AES.MODE_CBC)
         if len(clear_text) % AES.block_size == 0:
@@ -48,7 +53,7 @@ class PasswordManager:
         #ciphered_data=cipher.encrypt(pad(clear_text,AES.block_size))
 
         with open (path,'ab') as f:
-            f.write(cipher.iv)
+            f.write(cipher.iv) #Initialization Vector
             f.write(ciphered_data)
 
         
@@ -63,7 +68,7 @@ class PasswordManager:
         line_size = 32
         line_number = 0
         self.password_file=path
-        increment=0
+        increment = 0
 
         file_size = os.path.getsize('encrypted_text.bin')
         print(f"The size of {'encrypted_text.bin'} is {file_size} bytes.")
