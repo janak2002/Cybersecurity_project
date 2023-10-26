@@ -1,2 +1,13 @@
- # dict_2=pw.decrypt_cipher_text('encrypted_text.bin',list_of_logins)
-    # print(dict_2)
+self.contents_view=ft.Column([
+            #     ft.Container(
+            #             content=ft.TextField(value="contents"),
+            #             bgcolor=ft.colors.BLUE,
+            #             alignment=ft.alignment.center,
+            #             height=100,
+            #             padding=0
+                        
+            #         )
+            # ]
+
+
+            # )
